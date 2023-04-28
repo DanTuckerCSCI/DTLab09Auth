@@ -1,4 +1,6 @@
-﻿namespace DTLab09Auth.Services
+﻿using DTLab09Auth.Models.Entities;
+
+namespace DTLab09Auth.Services
 {
     public interface IUserRepository
     {

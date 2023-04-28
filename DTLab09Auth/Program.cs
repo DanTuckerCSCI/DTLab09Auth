@@ -1,6 +1,9 @@
+using DTLab09Auth.Models.Entities;
 using DTLab09Auth.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+//using DTLab09Auth.Models.Entities;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +13,38 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddUserManager<UserManager<ApplicationUser>>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IUserRepository, DbUserRepository>();
+builder.Services.AddScoped<Initializer>();
+
 var app = builder.Build();
+
+await SeedDataAsync(app);
+
+static async Task SeedDataAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var initializer = services.GetRequiredService<Initializer>();
+        await initializer.SeedUsersAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError($"An error occured while seeding the database. {ex.Message}");
+    }
+
+
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
