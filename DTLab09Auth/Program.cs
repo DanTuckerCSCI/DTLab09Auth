@@ -13,20 +13,26 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddUserManager<UserManager<ApplicationUser>>()
+
+    // Add identity role
     .AddRoles<IdentityRole>()
+
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUserRepository, DbUserRepository>();
+
+//Add Scoped Initializer
 builder.Services.AddScoped<Initializer>();
 
 var app = builder.Build();
 
 await SeedDataAsync(app);
 
+// Update program class to seed the database
 static async Task SeedDataAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();

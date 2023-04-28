@@ -10,7 +10,8 @@ namespace DTLab09Auth.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public DbUserRepository(ApplicationDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public DbUserRepository(ApplicationDbContext db,
+            UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _userManager = userManager;
@@ -28,7 +29,8 @@ namespace DTLab09Auth.Services
             return user;
         }
 
-        public async Task<ApplicationUser> CreateAsync(ApplicationUser user, string password)
+        public async Task<ApplicationUser> CreateAsync(
+            ApplicationUser user, string password)
         {
             await _userManager.CreateAsync(user, password);
             return user;
@@ -47,6 +49,11 @@ namespace DTLab09Auth.Services
                 if (!user.HasRole(roleName))
                     await _userManager.AddToRoleAsync(user, roleName);
             }
+        }
+
+        public Task<ApplicationUser?> ReadByUsernameAsync(string username)
+        {
+            throw new NotImplementedException();
         }
     }
 }
