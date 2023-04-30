@@ -1,0 +1,47 @@
+﻿@model IEnumerable<DTLab09Auth.Models.UserListVM>
+
+@{
+    ViewData["Title"] = "User List";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfRoles)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleNames)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfRoles)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleNames)
+            </td>
+            <td>
+             <!--- <a asp-action="Edit" asp-route-id="@item.Email">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Email">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Email">Delete</a> -->
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

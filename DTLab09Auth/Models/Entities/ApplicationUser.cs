@@ -10,7 +10,8 @@ namespace DTLab09Auth.Models.Entities
         public string LastName { get; set; } = string.Empty;
 
         [NotMapped]
-        public ICollection<string> Roles { get; set; } = new List<string>();
+        public ICollection<string> Roles { get; set; }
+            = new List<string>();
 
         // roleName = "Admin"
         public bool HasRole(string roleName)

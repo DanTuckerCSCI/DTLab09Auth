@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using DTLab09Auth.Models;
 
 namespace DTLab09Auth.Services
 {
@@ -11,5 +12,6 @@ namespace DTLab09Auth.Services
             : base(options)
         {
         }
+        public DbSet<DTLab09Auth.Models.UserListVM>? UserListVM { get; set; }
     }
 }

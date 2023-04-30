@@ -5,11 +5,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Diagnostics;
+using System.Text;
 
 namespace DTLab09Auth.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
+        
     {
+       
         private readonly ILogger<HomeController> _logger;
         private readonly IUserRepository _userRepo;
         private readonly Random _random = new Random();
@@ -21,6 +25,13 @@ namespace DTLab09Auth.Controllers
 
         public IActionResult Index()
         {
+            return View();
+        }
+        [AllowAnonymous]
+        public IActionResult About()
+        {
+            ViewData["Message"] = "Your application about page.";
+
             return View();
         }
 
@@ -49,48 +60,29 @@ namespace DTLab09Auth.Controllers
             return Content("No user");
         }
 
-        public async Task<IActionResult> CreateTestUser()
-        {
-            var n = _random.Next(100);
-            var check = await _userRepo.ReadAsync($"test{n}@test.com");
-            if (check == null)
-            {
-                var user = new ApplicationUser
-                {
-                    Email = $"test{n}@test.com",
-                    UserName = $"test{n}@test.com",
-                    FirstName = $"user{n}",
-                    LastName = $"Userlastname{n}"
-                };
-                await _userRepo.CreateAsync(user, "Pass1!");
-                return Content($"Created test user 'test{n}@test.com' with a password 'Pass1!'");
-            }
-            return Content("The user was already created.");
-        }
-
         public async Task<IActionResult> TestAssignUserToRole()
         {
-            await _userRepo.AssignUserToRoleAsync("test@fakemail.com", "TestRole2");
-            return Content("Assigned 'test@fakemail.com' to role 'TestRole2'");
+            await _userRepo.AssignUserToRoleAsync("fake@email.com", "Admin");
+            return Content("Assigned 'fake@email.com' to role 'Admin'");
         }
+
 
         public async Task<IActionResult> ShowRoles(string userName)
         {
             ApplicationUser? user = await _userRepo.ReadAsync(userName);
-            string roles = String.Join(", ", user!.Roles);
-            return Content($"Username: {user.UserName} Roles: {roles}");
-        }
-
-        public async Task<IActionResult> HasRole(string userName, string roleName)
-        {
-            var user = await _userRepo.ReadAsync(userName);
-            if (user!.HasRole(roleName))
+            StringBuilder builder = new();
+            foreach (var roleName in user!.Roles)
             {
-                return Content($"{userName} has role {roleName}");
+                builder.Append(roleName + " ");
             }
-            return Content($"{userName} does not have role {roleName}");
+            return Content($"UserName: {user.UserName} Roles: {builder}");
         }
 
+        [Authorize]
+        public IActionResult Restricted()
+        {
+            return Content("This is restricted.");
+        }
 
         [Authorize(Roles = "TestRole")]
         public IActionResult TestRoleCheck()
@@ -109,4 +101,6 @@ namespace DTLab09Auth.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
+
 }

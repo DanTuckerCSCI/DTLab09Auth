@@ -19,12 +19,15 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     // Add identity role
     .AddRoles<IdentityRole>()
 
+    .AddUserManager<UserManager<ApplicationUser>>()
+
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUserRepository, DbUserRepository>();
-
+//2.	Configure the scoped role repository service in Program.cs
+builder.Services.AddScoped<IRoleRepository, DbRoleRepository>();
 //Add Scoped Initializer
 builder.Services.AddScoped<Initializer>();
 
